@@ -10,6 +10,7 @@ import MostLikePosts from './components/Posts/MostLikePosts'
 import MostCommentedPost from './components/Posts/MostCommentedPosts'
 import ErrorPage from '../src/components/Pages/mainErrorPage'
 import Signup from './components/googleSignin/Signup'
+import Username from './components/Pages/Username'
 // TODO: Add SDKs for Firebase products that you want to use
 
 // const firebaseConfig = {
@@ -41,7 +42,7 @@ const Routes = createBrowserRouter([
         element:<Login/>
       },
       {
-        path:'/SignUp',
+        path:'/Register',
         element:<Signup/>
       },
       {
@@ -55,7 +56,11 @@ const Routes = createBrowserRouter([
       {
         path:'/MostCommentedPost',
         element:<MostCommentedPost/>
-      }
+      },
+      {
+        path:'/User/:name',
+        element: <Username/>
+      },
     ]
   }
 ])

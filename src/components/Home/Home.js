@@ -7,11 +7,7 @@ const Home = () => {
 
     return (
         <>
-            <Header>
-                <div className="site-heading">
-                    <h1>Web Development Blog</h1>
-                </div>
-            </Header>
+            
             <Posts />
             <Footer />
         </>

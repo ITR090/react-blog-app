@@ -1,13 +1,14 @@
 import React, { createContext, useState } from "react";
 import app from '../firebaseConfig';
-import { GoogleAuthProvider, getAuth, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword,updateProfile } from "firebase/auth";
+import { GoogleAuthProvider, getAuth, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { json } from "react-router-dom";
 
 export const AuthContext = createContext({
   user: {},
   token: '',
   onClickSignWithGoogle: () => { },
-  SignUpWithEmailandPassword:()=>{},
-  SignInWithEmailandPassword:()=>{},
+  SignUpWithEmailandPassword: () => { },
+  SignInWithEmailandPassword: () => { },
 })
 
 
@@ -33,7 +34,7 @@ export const SigninWithGoogleProvider = (props) => {
         //setUserData(user)
         setUserData(user)
         setToken(userToken)
-        localStorage.setItem("token",token)
+        localStorage.setItem("token", token)
         return {
           user: userData,
           then: token
@@ -45,29 +46,31 @@ export const SigninWithGoogleProvider = (props) => {
   }
 
   // new user
-  const SignUpWithEmailandPassword = (name, email,password) => {
+  const SignUpWithEmailandPassword = (name, email, password) => {
     const auth = getAuth(app)
-    
+
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // signin
         const user = userCredential.user; // user object
         const userToken = user.accessToken // user token
         // to update name (display name) 
-        updateProfile(user,{displayName:name}).
-        then(()=>{
-          setUserData(user)
-          setToken(userToken)
-          localStorage.setItem("token",token)
-          return {
-            user: userData,
-            then: token
-          }
-        }).catch((error)=>{
-          const errorMessage = error.message;
-          alert(errorMessage)
-        })
-        
+        updateProfile(user, { displayName: name }).
+          then(() => {
+            setUserData(user)
+            setToken(userToken)
+            localStorage.setItem("token", token)
+            // console.log(user)
+            // addAuthor(user.displayName)
+            return {
+              user: userData,
+              then: token
+            }
+          }).catch((error) => {
+            const errorMessage = error.message;
+            alert(errorMessage)
+          })
+
       })
       .catch((error) => {
         const errorMessage = error.message;
@@ -75,11 +78,25 @@ export const SigninWithGoogleProvider = (props) => {
       })
   }
 
+  // adding a new Author
+  const addAuthor = async (user) => {
+    try {
+      await fetch('https://react-blog-app-45e74-default-rtdb.europe-west1.firebasedatabase.app/Authors.json', {
+        method: 'POST',
+        body: JSON.stringify(user),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+    } catch (error) {
+      alert(error)
+    }
+  }
   // old user
-  const SignInWithEmailandPassword = (email,password) => {
+  const SignInWithEmailandPassword = (email, password) => {
 
     const auth = getAuth(app)
-   
+
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in 
@@ -88,12 +105,12 @@ export const SigninWithGoogleProvider = (props) => {
         console.log(userCredential)
         setUserData(user)
         setToken(token)
-        localStorage.setItem("token",token)
+        localStorage.setItem("token", token)
         return {
           user: userData,
           then: token
         }
-        
+
       })
       .catch((error) => {
         const errorMessage = error.message;
@@ -106,8 +123,8 @@ export const SigninWithGoogleProvider = (props) => {
     user: userData,
     token: token,
     onClickSignWithGoogle: onClickSignWithGoogle,
-    SignUpWithEmailandPassword:SignUpWithEmailandPassword,
-    SignInWithEmailandPassword:SignInWithEmailandPassword
+    SignUpWithEmailandPassword: SignUpWithEmailandPassword,
+    SignInWithEmailandPassword: SignInWithEmailandPassword
   }}>
     {props.children}
   </AuthContext.Provider>

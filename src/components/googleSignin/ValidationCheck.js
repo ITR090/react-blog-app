@@ -1,15 +1,15 @@
 
 
-export const isVaildText = (name) => {
-    if (name != '') {
-        return name;
+export const isVaildText = (text,input) => {
+    if (text.trim() !== '') {
+        return text;
     }
-    throw new Error("Please Provide a Vaild Name")
+    throw new Error(`Please Provide a Vaild ${input}`)
 
 }
 
 export const isVaildEmail = (email) => {
-    if (email !== '') {
+    if (email.trim() !== '') {
         const subSrting = '@gmail.com'
         if (email.includes(subSrting)) {
             return email
@@ -21,7 +21,7 @@ export const isVaildEmail = (email) => {
 }
 
 export const isVaildPassword = (password) => {
-    if (password != '') {
+    if (password.trim() != '') {
         if (password.length < 6) {
             throw new Error("Password Must Be More Than 6")
         }

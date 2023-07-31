@@ -37,7 +37,7 @@ const MostLikePosts = () => {
     useEffect(() => {
         getMostLikePosts()
         setIsLoading(false)
-    }, [])
+    }, [mostLikedPosts])
 
     return (
         <>

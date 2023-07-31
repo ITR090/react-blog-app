@@ -11,3 +11,21 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+.title-link:link { text-decoration: none; }
+.title-link:visited { text-decoration: none; }
+
+.title-link:hover { 
+  text-decoration:underline; 
+  text-decoration-color: #000; 
+}
+
+.userName-link:link,.userName-link:visited{
+  text-decoration: none ;
+  text-decoration-color: #000; 
+}
+
+.userName-link:hover{
+  text-decoration:underline; 
+}

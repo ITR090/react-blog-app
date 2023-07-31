@@ -7,6 +7,9 @@ import Comments from '../Comments/Comments';
 import Header from '../../UI/header/Header';
 import {AppContext} from '../../store/appStoreContext'
 import {AuthContext} from '../../store/loginStoreContext'
+import { storage } from '../../firebaseConfig';
+import { ref, getDownloadURL } from "firebase/storage";
+
 const Post = () => {
 
     // comments context    
@@ -20,11 +23,17 @@ const Post = () => {
     const Post_Id = useParams()
 
     const [post, setPost] = useState()
+    const [imageURL,setImageURL] = useState(null)
     
     const getPost = async () => {
         const response = await fetch(`https://react-blog-app-45e74-default-rtdb.europe-west1.firebasedatabase.app/Posts/${Post_Id.id}.json`);
         const responseData = await response.json();
         setPost(responseData)
+        
+        getDownloadURL(ref(storage,responseData.imagePath)).
+        then(url=>{
+            setImageURL(url)
+        })
     }
 
     useEffect(() => {
@@ -63,14 +72,14 @@ const Post = () => {
 
                     <article className="mb-4">
                         <div className="container px-4 px-lg-5">
-                            <div className="row gx-4 gx-lg-5 justify-content-center">
-                                <div className="col-md-10 col-lg-8 col-xl-7">
+                            <div className="row justify-content-center mt-5 mb-5">
+                                <div className="">
                                     <p>{post.content}</p>
-
-                                    {Object.keys(ctxAuth.user) == null && 
-                                    <p>
+                                    {post.imagePath && <img src={imageURL}  className='img-fluid img-thumbnail' />}
+                                    {Object.keys(ctxAuth.user) !== null && 
+                                    <p className='mb-5 mt-5'>
                                         Did you like this post click here to add it to your liked posts
-                                        <i className="fa-solid fa-heart fa-beat" style={{ color: "#ca1c1c" }} onClick={() => onClickLikePost(post.Likes,Post_Id)}></i>
+                                        <i className="p-2 fa-solid fa-heart fa-beat" style={{ color: "#ca1c1c" }} onClick={() => onClickLikePost(post.Likes,Post_Id)}></i>
                                     </p>}
 
 

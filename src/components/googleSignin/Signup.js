@@ -1,7 +1,6 @@
 
 import React, { useContext, useState } from 'react'
 import { AuthContext } from '../../store/loginStoreContext'
-import Header from '../../UI/header/Header';
 import { Link, redirect } from 'react-router-dom';
 import {isVaildEmail,isVaildPassword, isVaildText} from './ValidationCheck'
 
@@ -34,51 +33,52 @@ const Signup = () => {
     }
 
     return (
-        <Header>
+        <div class="container">
+        <div class="row">
+          <div class="col-lg-10 col-xl-9 mx-auto">
+            <div class="card flex-row my-5 border-0 shadow rounded-3 overflow-hidden">
+              <div class="card-img-left d-none d-md-flex">
+  
+              </div>
+              <div class="card-body p-4 p-sm-5">
+                <h5 class="card-title text-center mb-5 fw-light fs-5">Register</h5>
+                <form>
+  
+                  <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="floatingInputUsername" placeholder="myusername" 
+                    required autofocus onChange={(text) => { setName(text.target.value) }}/>
+                    <label for="floatingInputUsername">Name</label>
+                  </div>
+  
+                  <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="floatingInputEmail" placeholder="name@example.com" onChange={(text) => { setEmail(text.target.value) }}/>
+                    <label for="floatingInputEmail">Email address</label>
+                  </div>
+  
+                  <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password" onChange={(text) => { setPassowrd(text.target.value) }}/>
+                    <label for="floatingPassword">Password</label>
+                  </div>
+  
+                  <div class="d-grid mb-2">
+                    <button class="btn btn-lg btn-primary btn-login fw-bold text-uppercase" type="button" onClick={SignUp}>Register</button>
+                  </div>
 
-            <section className="vh-100" style={{ borderRadius: '1rem;' }}>
-                <div className="h-100">
-                    <div className="bg-dark text-white p-5">
-
-                        <h2 className="fw-bold mb-2 text-uppercase text-center">Sign Up</h2>
-                        <p className="text-white-50 text-center">Please enter your Name, Email and Password!</p>
-                        
-                        <from className="mb-md-5 mt-md-4 pb-5">
-
-                            <div className="form-outline form-white mb-4">
-                                <label className="form-label" for="text">Name</label>
-                                <input type="text" id="text" className="form-control form-control-lg" onChange={(text) => { setName(text.target.value) }} />
-                            </div>
-
-                            <div className="form-outline form-white mb-4">
-                                <label className="form-label" for="typeEmailX">Email</label>
-                                <input type="email" id="typeEmailX" className="form-control form-control-lg" onChange={(text) => { setEmail(text.target.value) }} />
-                            </div>
-
-                            <div className="form-outline form-white mb-4">
-                                <label className="form-label" for="typePasswordX">Password</label>
-                                <input type="password" id="typePasswordX" className="form-control form-control-lg" onChange={(text) => { setPassowrd(text.target.value) }} />
-                            </div>
-
-                            <div className='d-flex justify-content-center'>
-                                <button
-                                    className="btn btn-outline-light btn-lg px-5"
-                                    type="submit"
-                                    onClick={SignUp}
-                                >Sign Up</button>
-                            </div>
-                            <p className="mt-3 text-center"><Link className="text-white" to="/Login">Already hve an account?</Link></p>
-
-                            <p class="mt-4 text-center">Or Sign Up with</p>
-                            <div className="d-flex justify-content-center text-center mt-4 pt-1">
-                                <i className="fab fa-google fa-lg text-white" onClick={onClickBtn}></i>
-                            </div>
-
-                        </from>
-                    </div>
-                </div>
-            </section>
-        </Header>
+                  <Link class="d-block text-center mt-2 small" to="/Login">Already Have an account? Login</Link>
+  
+                  <hr class="my-4" />
+  
+                  <div class="d-grid mb-2">
+                    <button class="btn btn-lg btn-google btn-login fw-bold text-uppercase" onClick={onClickBtn}>
+                      <i class="fab fa-google me-2"></i> Sign up with Google
+                    </button>
+                  </div>                  
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>   
     )
 }
 

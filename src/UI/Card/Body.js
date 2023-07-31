@@ -12,7 +12,7 @@ const Body = (props) => {
     **/ 
     
         <div className="container">
-            <div className="row g-4">
+            <div className="mt-5 row g-4">
                     {props.children}
             </div>
         </div>
