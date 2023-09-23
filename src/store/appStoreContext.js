@@ -139,10 +139,11 @@ export const AppContextProvider = (props) => {
 
     // like post
     const likePost = (likedpost, post_id) => {
-        let newLikePost = parseInt(likedpost) + 1
-        // to update the posts table with new like value
+        
+        const numofLikedPost = likedpost.Likes
+        //to update the posts table with new like value
         update(ref(database, `/Posts/${post_id.id}`), {
-            Likes: newLikePost
+            Likes: numofLikedPost
         }).then(() => {
             alert("Added to your liked posts")
         })
@@ -154,9 +155,10 @@ export const AppContextProvider = (props) => {
        return userPosts;
     }
 
-
+    // most liked posts > 5
     const getMostLikePosts = () => {
-
+     const mostLikedPosts = posts.filter(post => post.Likes > 5);
+     return mostLikedPosts;
     }
 
     return <AppContext.Provider value={{

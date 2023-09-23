@@ -19,7 +19,7 @@ export const CommentContextProvider = (props) => {
         for (const key in responseData) {
             const obj = {
                 id: responseData[key].id,
-                content: responseData[key].text,
+                text: responseData[key].text,
                 post_id: responseData[key].post_id,
                 user_id: responseData[key].user_id,
                 userName: responseData[key].userName,
@@ -44,15 +44,18 @@ export const CommentContextProvider = (props) => {
         return result;
     }
     const AddComment = async (newComment,db) => {
+        // console.log(updatedComments)
+        let updatedComments= comments.concat(newComment)
+        setComments(updatedComments)
         set(ref(db, 'Comments/' + generateString(8)), {
-            id: Math.random().toString(36),
+            id: newComment.id,
             text: newComment.text,
             post_id: newComment.post_id,
             user_id: newComment.user_id,
             userName: newComment.userName,
             commentDate: newComment.commentDate
           });
-        getAllComments()  
+        //getAllComments()  
     }
 
     return (

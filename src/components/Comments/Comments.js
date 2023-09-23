@@ -7,7 +7,7 @@ const Comments = (props) => {
     return <div>
       {
         props.postComments.map(comment => {
-          return <Comment  singleComment={comment} key={comment.id}/>
+          return <Comment  singleComment={comment} />
           
         })
       }

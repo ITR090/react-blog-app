@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext,useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import CommentForm from '../Comments/CommentForm'
 import { CommentContext } from '../../store/commentStoreContext';
@@ -24,29 +24,53 @@ const Post = () => {
 
     const [post, setPost] = useState()
     const [imageURL,setImageURL] = useState(null)
+    //const [comments, setComments] = useState()
     
-    const getPost = async () => {
+    const getPost = useCallback(async () => {
+        //console.log("get post")
         const response = await fetch(`https://react-blog-app-45e74-default-rtdb.europe-west1.firebasedatabase.app/Posts/${Post_Id.id}.json`);
-        const responseData = await response.json();
+        const responseData = await response.json()
+        //console.log("log : "+post)
         setPost(responseData)
-        
         getDownloadURL(ref(storage,responseData.imagePath)).
         then(url=>{
             setImageURL(url)
         })
-    }
+        ctxComment.getAllComments()
+        //setComments()
+    },[])
+
+    
 
     useEffect(() => {
         getPost();
-        ctxComment.getAllComments()
     }, [])
 
-    const onClickLikePost = (likedpost,post_id) => {
-        ctxPost.likePost(likedpost,post_id)
-        getPost();
+    const onClickLikePost = (post_id) => {
+
+        const updatedPost ={
+            ...post,
+            Likes : post.Likes +1
+        }
+        setPost(updatedPost)
+        // setPost(PrevPostState => {
+        //     return{
+        //         ...PrevPostState,
+        //         Likes : PrevPostState.Likes + 1
+        //     }
+        // })
+       ctxPost.likePost(updatedPost,post_id)
     }
 
+    const onAddComment = (comment,db)=>{
+        
+        //let updatedComments = comments.concat(comment)
+        //console.log(updatedComments)
+        //setComments(updatedComments)
+        ctxComment.AddComment(comment,db)
+    }
 
+    
 
     return (
         <>
@@ -74,18 +98,18 @@ const Post = () => {
                         <div className="container px-4 px-lg-5">
                             <div className="row justify-content-center mt-5 mb-5">
                                 <div className="">
-                                    <p>{post.content}</p>
+                                    <p className='text-break'>{post.content}</p>
                                     {post.imagePath && <img src={imageURL}  className='img-fluid img-thumbnail' />}
                                     {Object.keys(ctxAuth.user) !== null && 
                                     <p className='mb-5 mt-5'>
                                         Did you like this post click here to add it to your liked posts
-                                        <i className="p-2 fa-solid fa-heart fa-beat" style={{ color: "#ca1c1c" }} onClick={() => onClickLikePost(post.Likes,Post_Id)}></i>
+                                        <i className="p-2 fa-solid fa-heart fa-beat" style={{ color: "#ca1c1c" }} onClick={() => onClickLikePost(Post_Id)}></i>
                                     </p>}
 
 
                                 </div>
                             </div>
-                            <CommentForm post={post} />
+                            <CommentForm onaddCommentCallback={onAddComment} post={post} />
                             <br />
                             <h5>Recent Comments:</h5>
                             {ctxComment.comments && 
@@ -102,4 +126,4 @@ const Post = () => {
     )
 }
 
-export default React.memo(Post)
+export default Post

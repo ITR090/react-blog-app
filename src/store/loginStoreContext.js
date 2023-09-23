@@ -1,7 +1,7 @@
 import React, { createContext, useState } from "react";
 import app from '../firebaseConfig';
 import { GoogleAuthProvider, getAuth, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { json } from "react-router-dom";
+import { ref, set,getDatabase } from "firebase/database";
 
 export const AuthContext = createContext({
   user: {},
@@ -17,6 +17,7 @@ export const SigninWithGoogleProvider = (props) => {
   const [userData, setUserData] = useState({})
   const [token, setToken] = useState('')
 
+  // google signin
   const onClickSignWithGoogle = () => {
 
     const provider = new GoogleAuthProvider();
@@ -30,11 +31,11 @@ export const SigninWithGoogleProvider = (props) => {
         // setToken(userToken)
         // The signed-in user info.
         const user = result.user;
-
+        
         //setUserData(user)
         setUserData(user)
         setToken(userToken)
-        localStorage.setItem("token", token)
+        localStorage.setItem("token", userToken)
         return {
           user: userData,
           then: token
@@ -45,8 +46,8 @@ export const SigninWithGoogleProvider = (props) => {
       })
   }
 
-  // new user
-  const SignUpWithEmailandPassword = (name, email, password) => {
+  // new user email and password
+  const SignUpWithEmailandPassword = (name, email, password, description) => {
     const auth = getAuth(app)
 
     createUserWithEmailAndPassword(auth, email, password)
@@ -60,8 +61,7 @@ export const SigninWithGoogleProvider = (props) => {
             setUserData(user)
             setToken(userToken)
             localStorage.setItem("token", token)
-            // console.log(user)
-            // addAuthor(user.displayName)
+            addAuthor(user.uid, user.displayName, description)
             return {
               user: userData,
               then: token
@@ -79,20 +79,19 @@ export const SigninWithGoogleProvider = (props) => {
   }
 
   // adding a new Author
-  const addAuthor = async (user) => {
+  const addAuthor = async (user_id, username, description) => {
+
+    const db =getDatabase();
     try {
-      await fetch('https://react-blog-app-45e74-default-rtdb.europe-west1.firebasedatabase.app/Authors.json', {
-        method: 'POST',
-        body: JSON.stringify(user),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
+      set(ref(db, 'Authors/' + user_id), {
+        name: username,
+        description: description
+      });
     } catch (error) {
       alert(error)
     }
   }
-  // old user
+  // old user email and password
   const SignInWithEmailandPassword = (email, password) => {
 
     const auth = getAuth(app)
@@ -102,7 +101,7 @@ export const SigninWithGoogleProvider = (props) => {
         // Signed in 
         const user = userCredential.user;
         const token = userCredential.user.accessToken
-        console.log(userCredential)
+        //console.log(userCredential)
         setUserData(user)
         setToken(token)
         localStorage.setItem("token", token)

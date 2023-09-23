@@ -11,6 +11,7 @@ import MostCommentedPost from './components/Posts/MostCommentedPosts'
 import ErrorPage from '../src/components/Pages/mainErrorPage'
 import Signup from './components/googleSignin/Signup'
 import Username from './components/Pages/Username'
+import Form from './UI/Form/Form'
 // TODO: Add SDKs for Firebase products that you want to use
 
 // const firebaseConfig = {
@@ -61,12 +62,20 @@ const Routes = createBrowserRouter([
         path:'/User/:name',
         element: <Username/>
       },
+      {
+        path:'/Form',
+        element: <Form/>
+      }
     ]
   }
 ])
 
 function App() {
 
+  // useEffect(()=>{
+  //   if(localStorage.getItem('token')){
+  //   }
+  // },[])
 
   return (
 

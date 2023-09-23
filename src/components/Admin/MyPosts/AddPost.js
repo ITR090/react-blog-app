@@ -1,25 +1,24 @@
-import React, { useState, useContext } from 'react'
+import React, {useContext } from 'react'
 import MainButton from '../../../UI/Button/Button'
 import { AuthContext } from '../../../store/loginStoreContext'
 import { AppContext } from '../../../store/appStoreContext';
 import { storage } from '../../../firebaseConfig';
 import { ref, uploadBytes } from "firebase/storage";
-import { isVaildText } from '../../googleSignin/ValidationCheck';
-
+import { useForm, FormProvider } from "react-hook-form";
+import { Post_Title, Post_Content, Post_File } from '../../../utils/Posts/newPost_validation'
+import Input from '../../../UI/Input/Input';
+import MainForm from '../../../UI/Form/MainForm';
 const AddPost = () => {
 
 
-    // state
-    const [title, setTitle] = useState('')
-    const [content, setContent] = useState('')
-    const [image, setImage] = useState(null)
+    const methods = useForm()
 
     // context
     const ctxAuth = useContext(AuthContext)
     const ctxPost = useContext(AppContext)
 
-    const onAddPostHandler = async () => {
-
+    const onAddPostHandler = methods.handleSubmit(async (data) => {
+        
         try {
             let currentDateObj = new Date()
             let month = currentDateObj.toLocaleDateString('en-us', { month: "long" })
@@ -27,53 +26,54 @@ const AddPost = () => {
             let day = currentDateObj.getDate();
             let date = month + ' ' + day + ', ' + year
 
-            if (isVaildText(title.target.value, title.target.name) && isVaildText(content.target.value, content.target.name)) {
-                // Create a storage reference from our storage service
-                const imageRef = ref(storage, `images/${ctxAuth.user.uid}/${image.name}`);
-                uploadBytes(imageRef, image)
-                    .then((url) => {
-                        const newPost = {
-                            Likes: 0,
-                            content: content.target.value,
-                            id: Math.random().toString(36),
-                            title: title.target.value,
-                            user_id: ctxAuth.user.uid,
-                            date: date,
-                            userName: ctxAuth.user.displayName,
-                            imagePath: `gs://${url.metadata.bucket}/${url.metadata.fullPath}`
-                        }
-                        ctxPost.addPost(newPost);
-                        setContent('')
-                        setTitle('')
-                        alert("Added a Post")
-                    })
-                    .catch((error) => {
-                        alert(error)
-                    })
-            }
+
+            const imageRef = ref(storage, `images/${ctxAuth.user.uid}/${data.file[0].name}`);
+            uploadBytes(imageRef, data.file[0])
+                .then((url) => {
+                    const newPost = {
+                        Likes: 0,
+                        content: data.Post_Content,
+                        id: Math.random().toString(36),
+                        title: data.Post_Title,
+                        user_id: ctxAuth.user.uid,
+                        date: date,
+                        userName: ctxAuth.user.displayName,
+                        imagePath: `gs://${url.metadata.bucket}/${url.metadata.fullPath}`
+                    }
+                    ctxPost.addPost(newPost);
+                    methods.reset()
+                    alert("Added a Post")
+                })
+                .catch((error) => {
+                    alert(error)
+                })
 
         } catch (error) {
             alert(error)
         }
-    }
-
+    })
     return (
-        <form>
-            <div className="mb-3">
-                <label htmlFor="title" className="form-label">Post Title</label>
-                <input type="text" id="title" className="form-control" name='title' onChange={(title) => { setTitle(title) }} />
-            </div>
-            <div className='mb-3'>
-                <label htmlFor='file-content' className='form-label'>Upload File</label>
-                <input type="file" className='form-control' name='file' onChange={(image) => { setImage(image.target.files[0]) }} />
-            </div>
-            <div className="mb-3">
-                <label htmlFor="exampleFormControlTextarea1" className="form-label">Post Content</label>
-                <textarea name='content' onChange={(content) => { setContent(content) }} className="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-            </div>
-            <MainButton btnType="button" onClickBtn={() => { onAddPostHandler() }}>Save</MainButton>
+        <MainForm title="Post Details">
 
-        </form>
+            <FormProvider {...methods}>
+                <form
+                    onSubmit={(e) => e.preventDefault()}
+                    noValidate
+                >
+                    <div className="form-floating mb-3">
+                        <Input {...Post_Title} />
+                    </div>
+                    <div className='form-floating mb-3'>
+                        <Input {...Post_File} />
+                    </div>
+                    <div className="form-floating mb-3">
+                        <Input {...Post_Content} />
+                    </div>
+                    <MainButton className="btn btn-secondary" btnType="button" onClickBtn={() => { onAddPostHandler() }}>Save</MainButton>
+
+                </form>
+            </FormProvider>
+        </MainForm>
     )
 }
 

@@ -8,12 +8,12 @@ const PostsLists = (props) => {
             {props.post.map(post => {
                 return <>
                     <DivCol>
-                        <div className='pe-3'>
+                        <div key={post.id} className='pe-3'>
                             <img className='w-100 img-fluid' src={post.imageURL} />
                         </div>
                     </DivCol>
                     <DivCol>
-                        <div className='p-3 h-100'>
+                        <div key={post.id} className='p-3 h-100'>
                             <Link className='title-link' to={`/post/${post.path_id}`}>
                                 <h2 className="post-title text-dark">{post.title}</h2>
                             </Link>
